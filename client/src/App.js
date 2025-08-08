@@ -1,11 +1,14 @@
-import Leaderboard from './api/Leaderboard.js';
+import { Container, Typography } from "@mui/material";
+import Leaderboard from "./Leaderboard";
 
 function App() {
   return (
-    <div>
-      <h1>🏆 Leaderboard</h1>
+    <Container maxWidth="sm" style={{ marginTop: "2rem" }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        🏆 Leaderboard
+      </Typography>
       <Leaderboard />
-    </div>
+    </Container>
   );
 }
 
