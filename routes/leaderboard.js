@@ -1,6 +1,8 @@
 import db from '../services/db.js';
 
 export default async function (fastify, opts) {
+
+
   // Add a new user
   fastify.post('/users', async (req, res) => {
     const { name, image_url, score } = req.body;
@@ -32,7 +34,7 @@ export default async function (fastify, opts) {
     return result.rows;
   });
 
-  // User position with ±5 context
+  // User position with +-5 context
   fastify.get('/leaderboard/user/:id', async (req, res) => {
     const { id } = req.params;
     const userResult = await db.query(
