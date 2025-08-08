@@ -1,5 +1,5 @@
 import { Container, Typography } from "@mui/material";
-import Leaderboard from "./Leaderboard";
+import Leaderboard from "./components/Leaderboard";
 
 function App() {
   return (

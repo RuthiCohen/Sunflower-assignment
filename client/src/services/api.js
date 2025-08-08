@@ -28,13 +28,11 @@ export const updateUserScore = async (id, score) => {
   return res.json();
 };
 
-
 export const getUserWithContext = async (id) => {
   const res = await fetch(`${API_BASE}/leaderboard/user/${id}`);
   if (!res.ok) throw new Error("Failed to get user context");
   return res.json();
 };
-
 
 export const fetchAllUsers = async () => {
   const res = await fetch(`${API_BASE}/users`);
