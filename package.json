@@ -1,0 +1,26 @@
+{
+  "name": "sunflower-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RuthiCohen/Sunflower-assignment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RuthiCohen/Sunflower-assignment/issues"
+  },
+  "homepage": "https://github.com/RuthiCohen/Sunflower-assignment#readme",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "fastify": "^5.4.0",
+    "pg": "^8.16.3"
+  }
+}
