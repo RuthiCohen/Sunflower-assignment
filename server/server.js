@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import cors from '@fastify/cors';
 import dotenv from "dotenv";
 import leaderboardRoutes from "./routes/leaderboard.js";
 
@@ -6,7 +7,7 @@ dotenv.config();
 
 const fastify = Fastify({ logger: true });
 
-fastify.register(leaderboardRoutes);
+fastify.register(cors, leaderboardRoutes);
 
 const start = async () => {
   try {
