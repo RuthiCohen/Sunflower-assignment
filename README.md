@@ -172,3 +172,61 @@ docker compose down -v
 docker compose build client --no-cache
 docker compose up -d client
 ```
+
+---
+## Verification & API Tests
+
+In the terminal set:
+```bash
+SERVER=http://localhost:3000
+CLIENT=http://localhost:3033
+```
+
+and then:
+
+- Health checks
+```bash
+curl $SERVER/healthz
+curl -I $CLIENT                
+curl $CLIENT/api/healthz     
+```
+
+- List users
+```bash
+curl $SERVER/users
+curl $CLIENT/api/users
+```
+
+- Create a user
+```bash
+curl -X POST $SERVER/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test User 1","image_url":"https://example.com/img.jpg"}'
+
+curl -X POST $CLIENT/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test User 2","image_url":"https://example.com/img2.jpg"}'
+```
+
+- Update user’s score
+```bash
+curl -X PUT $SERVER/users/<ID>/score \
+  -H "Content-Type: application/json" \
+  -d '{"score": 999}'
+
+curl -X PUT $CLIENT/api/users/<ID>/score \
+  -H "Content-Type: application/json" \
+  -d '{"score": 555}'
+```
+
+- Leaderboard:
+```bash
+curl $SERVER/leaderboard/top/5
+curl $CLIENT/api/leaderboard/top/5
+```
+
+- User with context (rank):
+```bash
+curl $SERVER/leaderboard/user/<ID>
+curl $CLIENT/api/leaderboard/user/<ID>
+```
