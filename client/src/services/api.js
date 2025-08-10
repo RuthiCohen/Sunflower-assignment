@@ -19,13 +19,23 @@ export const addUser = async ({ name, image_url, score }) => {
 };
 
 export const updateUserScore = async (id, score) => {
-  const res = await fetch(`${API_BASE}/users/${id}/score`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ score }),
-  });
-  if (!res.ok) throw new Error("Failed to update user score");
-  return res.json();
+  try {
+    const res = await fetch(`${API_BASE}/users/${id}/score`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ score }),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errorText}`);
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("Network or server error:", err);
+    throw err;
+  }
 };
 
 export const getUserWithContext = async (id) => {
