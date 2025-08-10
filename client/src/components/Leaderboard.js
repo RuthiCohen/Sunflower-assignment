@@ -124,7 +124,7 @@ const Leaderboard = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAdd(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleAddUser}>
+          <Button variant="contained" onClick={handleAddUser} disabled={!newUser.name || newUser.image_url === ""}>
             Ok
           </Button>
         </DialogActions>

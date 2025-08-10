@@ -1,10 +1,10 @@
 import Redis from 'ioredis';
 
-const redis = new Redis('redis://localhost:6379', {
-  maxRetriesPerRequest: 3,
-});
+const url = process.env.REDIS_URL || 'redis://localhost:6379';
 
-redis.on('connect', () => console.log('Redis connected'));
+const redis = new Redis(url, { maxRetriesPerRequest: 3 });
+
+redis.on('connect', () => console.log('Redis connected', url));
 redis.on('error', (err) => console.error('Redis error:', err));
 
 export default redis;
