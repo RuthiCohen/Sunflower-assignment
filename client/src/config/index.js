@@ -1,11 +1,6 @@
-const dev = {
-  API_BASE: "http://localhost:3000",
-};
+const API_BASE =
+  process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV === "production" ? "/api" : "http://localhost:3000");
 
-const prod = {
-  API_BASE: process.env.REACT_APP_API_URL,
-};
-
-const config = process.env.NODE_ENV === "production" ? prod : dev;
-
+const config = { API_BASE };
 export default config;

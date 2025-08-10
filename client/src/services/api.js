@@ -8,11 +8,11 @@ export const fetchTopUsers = async (n = 10) => {
   return res.json();
 };
 
-export const addUser = async ({ name, image_url, score }) => {
+export const addUser = async ({ name, image_url }) => {
   const res = await fetch(`${API_BASE}/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, image_url, score }),
+    body: JSON.stringify({ name, image_url }),
   });
   if (!res.ok) throw new Error("Failed to add user");
   return res.json();

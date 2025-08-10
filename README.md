@@ -1,11 +1,174 @@
-# Sunflower-assignment
+# Leaderboard — README
 
-## Running:
+## Overview
 
-run db: docker compose up -d db
+This **Leaderboard** project contain this stack:
 
-run schema: docker exec -i $(docker ps -qf "ancestor=postgres:14") psql -U postgres -d leaderboard < models/schema.sql
+- **Server:** Node.js (using Fastify) API on port `3000`
+- **Client:** Front‑end using React served by **NGINX** on port `80` (mapped to my host `3033`)
+- **Postgres:** database (internal Docker network)
+- **Redis:** cache for optimization (mapped to `6379`)
 
-run api: docker compose up --build api
+The **client** uses an NGINX proxy so that browser requests to `/api/...` are forwarded to the server at `server:3000`.
 
-check: curl http://localhost:3000/leaderboard/top/10
+---
+
+## Prerequisites
+
+- Docker & Docker Compose
+- Free ports on your host:
+  - `3000` (API)
+  - `3033` for the client
+  - `6379` (Redis)
+
+---
+
+## Quick Start
+
+```bash
+# From the project root (where docker-compose.yml lives)
+
+# Clean slate (removes containers, networks, and volumes)
+docker compose down -v
+
+# Build all images fresh
+docker compose build --no-cache
+
+# Start all services in the background
+docker compose up -d
+
+# See what is running
+docker compose ps
+```
+
+Open:
+
+- API health: http://localhost:3000/healthz
+- Client app: http://localhost:3033/
+
+---
+
+## Services & Ports
+
+| Service    | Host:Container Port | What it does                |
+| ---------- | ------------------- | --------------------------- |
+| `server`   | `3000:3000`         | Node Fastify API            |
+| `client`   | `3033:80`           | NGINX serving the front‑end |
+| `redis`    | `6379:6379`         | Redis cache                 |
+| `postgres` | internal only       | Postgres (Docker network)   |
+
+---
+
+## NGINX proxy (client -> server)
+
+The client image includes an NGINX config that forwards `/api/...` to the server:
+
+In `docker-compose.yml`, make sure the client maps **host 3033 -> container 80**:
+
+```yaml
+client:
+  build:
+    context: ./client
+  depends_on:
+    - server
+  ports:
+    - "3033:80"
+```
+
+---
+
+## Health Checks & Smoke Tests (cURL)
+
+```bash
+# Server directly
+curl http://localhost:3000/healthz
+curl http://localhost:3000/leaderboard/top/5
+
+# Through the client (via NGINX proxy -> server)
+curl -I http://localhost:3033                 # Should show: Server: nginx
+curl http://localhost:3033/api/healthz        # {"ok": true}
+curl http://localhost:3033/api/leaderboard/top/5
+```
+
+---
+
+## Postgres: connect and check tables
+
+```bash
+# Open a psql shell inside the postgres container
+docker compose exec -it postgres psql -U ruti -d leaderboard
+
+# In psql:
+\dt                                -- list tables
+SELECT COUNT(*) FROM users;        -- check rows
+SELECT * FROM users LIMIT 5;
+
+# exit psql
+\q
+```
+
+**Postgressql seeding:** The project contains a JavaScript seeder in path `server/models/seed.js`, and it **won’t** be executed automatically by Postgres.
+
+Run it from the server container, e.g.:
+
+```bash
+docker compose exec server node ./models/seed.js
+```
+
+---
+
+## Logs & Debugging
+
+```bash
+# Tail logs
+docker compose logs -f server
+docker compose logs -f client
+docker compose logs -f postgres
+docker compose logs -f redis
+
+# Inspect the effective NGINX config inside the client container
+docker exec -it <client-container-name> sh -c 'nginx -T | sed -n "1,220p"'
+docker exec -it <client-container-name> sh -c 'cat /etc/nginx/conf.d/default.conf'
+```
+
+Get the container name:
+
+```bash
+docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}"
+```
+
+---
+
+## Quick Start
+
+```bash
+# From the project root (where docker-compose.yml lives)
+
+# Optional: clean slate (removes containers, networks, and volumes)
+docker compose down -v
+
+# Build all images fresh
+docker compose build --no-cache
+
+# Start all services in the background
+docker compose up -d
+
+# See what is running
+docker compose ps
+```
+
+---
+
+## Stop, Reset, Rebuild
+
+```bash
+# Stop all
+docker compose down
+
+# Stop and remove volumes (DB/cache reset)
+docker compose down -v
+
+# Rebuild only the client (e.g., after changing NGINX or front‑end)
+docker compose build client --no-cache
+docker compose up -d client
+```
