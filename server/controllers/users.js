@@ -1,4 +1,5 @@
 import db from '../services/db.js';
+import redis from '../services/redis.js';
 
 export const getAllUsers = async (req, res) => {
   const result = await db.query('SELECT * FROM users ORDER BY id');
@@ -25,12 +26,21 @@ export const updateUserScore = async (req, res) => {
 };
 
 export const getTopUsers = async (req, res) => {
-  const { n } = req.params;
-  const result = await db.query(
-    'SELECT * FROM users ORDER BY score DESC LIMIT $1',
+  const n = Number(req.params.n ?? 10);
+  const cacheKey = `leaderboard:top:${n}`;
+
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    console.log('Pulling data from Redis cache');
+    return JSON.parse(cached);
+  }
+
+  const { rows } = await db.query(
+    'SELECT id, name, image_url, score FROM users ORDER BY score DESC LIMIT $1',
     [n]
   );
-  return result.rows;
+
+  return rows;
 };
 
 export const getUserWithContext = async (req, res) => {
