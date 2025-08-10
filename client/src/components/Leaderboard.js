@@ -102,7 +102,12 @@ const Leaderboard = () => {
         </Button>
       </Stack>
 
-      <Dialog open={openAdd} onClose={() => setOpenAdd(false)} fullWidth maxWidth="sm">
+      <Dialog
+        open={openAdd}
+        onClose={() => setOpenAdd(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Add new user</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
@@ -124,13 +129,22 @@ const Leaderboard = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAdd(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleAddUser} disabled={!newUser.name || newUser.image_url === ""}>
+          <Button
+            variant="contained"
+            onClick={handleAddUser}
+            disabled={!newUser.name || newUser.image_url === ""}
+          >
             Ok
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openUpdate} onClose={() => setOpenUpdate(false)}  fullWidth maxWidth="sm">
+      <Dialog
+        open={openUpdate}
+        onClose={() => setOpenUpdate(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Update user score</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
