@@ -92,8 +92,8 @@ export const getTopUsers = async (req, res) => {
       ({ rows } = await db.query(
         `SELECT id, name, image_url, score
          FROM users
-         WHERE id = ANY($1)
-         ORDER BY array_position($1, id)`,
+         WHERE id = ANY($1::bigint[])
+         ORDER BY array_position($1::bigint[], id)`,
         [ids]
       ));
     }
@@ -108,7 +108,7 @@ export const getTopUsers = async (req, res) => {
 
 export const getUserWithContext = async (req, res) => {
   try {
-    const id = String(req.params.id); 
+    const id = Number(req.params.id); 
 
     const rank = await redis.zrevrank('leaderboard', id); 
     if (rank === null) return res.code(404).send({ error: 'User not found' });
@@ -123,8 +123,8 @@ export const getUserWithContext = async (req, res) => {
     const { rows } = await db.query(
       `SELECT id, name, image_url, score
        FROM users
-       WHERE id = ANY($1)
-       ORDER BY array_position($1, id)`,
+       WHERE id = ANY($1::bigint[])
+       ORDER BY array_position($1::bigint[], id)`,
       [ids]
     );
 

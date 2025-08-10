@@ -38,7 +38,7 @@ export default async function (fastify, opts) {
           }
         },
         response: {
-          200: { type: 'object' }
+          201: { type: 'object' }
         }
       }
     }, createUser);
@@ -62,6 +62,7 @@ export default async function (fastify, opts) {
       schema: {
         params: {
           type: 'object',
+          required: ['n'], 
           properties: { n: { type: 'integer', minimum: 1, maximum: 100 } }
         }
       }
